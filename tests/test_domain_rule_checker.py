@@ -335,3 +335,105 @@ class DomainRuleCheckerTestCase(aiounittest.AsyncTestCase):
                 unknown_room=True,
             )
         )
+
+    async def test_domain_mapping_regex(self) -> None:
+        config = {
+            "can_invite_if_not_in_domain_mapping": False,
+            "domain_mapping": {
+                "^source_one.*$": ["target_one", "target_two"],
+                "^source_two.*$": ["target_two"],
+                "^source_four.*$": [],
+            },
+            "domains_prevented_from_being_invited_to_published_rooms": [
+                "^.*target_two$"
+            ],
+        }
+
+        # Check that a user can invite a remote server if the domain mapping allows it.
+        self.assertTrue(
+            await self._test_user_may_invite(
+                config,
+                "test:source_one_random_string",
+                "test:target_one",
+                False,
+                False,
+            ),
+        )
+
+        # Check that a user can't invite a remote server if the domain mapping doesn't allow it.
+        self.assertFalse(
+            await self._test_user_may_invite(
+                config,
+                "test:source_one_random_string",
+                "test:target_three",
+                False,
+                False,
+            )
+        )
+
+        # Check that a user can't invite a remote server if the domain mapping doesn't allow it.
+        self.assertFalse(
+            await self._test_user_may_invite(
+                config,
+                "test:source_two_random_string",
+                "test:target_one",
+                False,
+                False,
+            )
+        )
+
+        # Check that a user can't invite a remote server if the domain mapping doesn't allow it.
+        self.assertFalse(
+            await self._test_user_may_invite(
+                config,
+                "test:source_four_random_string",
+                "test:target_one",
+                False,
+                False,
+            )
+        )
+
+    async def test_domains_prevented_from_being_invited_to_published_rooms_regex(self) -> None:
+        config = {
+            "can_invite_if_not_in_domain_mapping": False,
+            "domain_mapping": {
+                "source_one": ["target_one", "target_two"],
+                "source_two": ["target_two"],
+            },
+            "domains_prevented_from_being_invited_to_published_rooms": [
+                "^.*target_two.*$"
+            ],
+        }
+
+        # User can invite external user to a non-published room
+        self.assertTrue(
+            await self._test_user_may_invite(
+                config,
+                "test:source_one",
+                "test:target_two",
+                False,
+                False,
+            ),
+        )
+
+        # User cannot invite external user to a published room
+        self.assertFalse(
+            await self._test_user_may_invite(
+                config,
+                "test:source_one",
+                "test:target_two_extended",
+                False,
+                True,
+            )
+        )
+
+        # User cannot invite external user to a published room
+        self.assertFalse(
+            await self._test_user_may_invite(
+                config,
+                "test:source_one",
+                "test:prefix_target_two_suffix",
+                False,
+                True,
+            )
+        )
