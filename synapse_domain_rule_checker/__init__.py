@@ -190,7 +190,7 @@ class DomainRuleChecker(object):
         if not self._matches_domain_mapping(inviter_domain, invitee_domain):
             return self._config.can_invite_if_not_in_domain_mapping
 
-        return False
+        return True
 
     async def user_may_join_room(
         self,
