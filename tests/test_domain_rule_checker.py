@@ -115,8 +115,8 @@ class DomainRuleCheckerTestCase(aiounittest.AsyncTestCase):
         config = {
             "can_invite_if_not_in_domain_mapping": False,
             "domain_mapping": {
-                "source_one": ["^.*target_one$", "^.*target_two$"],
-                "source_two": ["^.*target_two$"],
+                "source_one": ["target_one", "target_two"],
+                "source_two": ["target_two"],
                 "source_four": [],
             },
             "domains_prevented_from_being_invited_to_published_rooms": [
