@@ -113,7 +113,7 @@ class DomainRuleCheckerTestCase(aiounittest.AsyncTestCase):
 
     async def test_disallowed(self) -> None:
         config = {
-            "can_invite_if_not_in_domain_mapping": True,
+            "can_invite_if_not_in_domain_mapping": False,
             "domain_mapping": {
                 "source_one": ["^.*target_one$", "^.*target_two$"],
                 "source_two": ["^.*target_two$"],
