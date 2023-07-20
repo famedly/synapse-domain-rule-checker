@@ -9,8 +9,6 @@ jobs:
       image: python:bullseye
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
     - name: Install dependencies
       run: |
         pip install hatch
@@ -19,21 +17,18 @@ jobs:
         hatch run format
 
   test:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.11-rc", "3.10", "3.9"]
-    runs-on: ubuntu-latest
-    container:
-      image: python:${{ matrix.python-version }}-bullseye
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
+    - name: Set up Docker container
+      run: |
+        docker run -d --name test-container -v $(pwd):/app -w /app python:${{ matrix.python-version }}-bullseye
     - name: Install dependencies
       run: |
-        pip install hatch
+        docker exec test-container pip install hatch
     - name: Run test
       run: |
-        hatch run cov
+        docker exec test-container hatch run cov
