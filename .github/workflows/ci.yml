@@ -23,6 +23,9 @@ jobs:
         python-version: ["3.11-rc", "3.10", "3.9"]
     steps:
     - uses: actions/checkout@v2
+    - name: Pull Docker image
+      run: |
+        docker pull python:${{ matrix.python-version }}-bullseye
     - name: Set up Docker container
       run: |
         docker run -d --name test-container -v $(pwd):/app -w /app python:${{ matrix.python-version }}-bullseye
