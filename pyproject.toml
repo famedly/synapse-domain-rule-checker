@@ -1,10 +1,54 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.isort]
-profile = "black"
-known_first_party = [
-    "synapse_domain_rule_checker",
-    "tests"
+[project]
+name = "synapse-domain-rule-checker"
+description = 'Synapse module which checks dinvite domains'
+readme = "README.md"
+requires-python = ">=3.9"
+license = "AGPL-3.0-only"
+keywords = []
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = ["twisted"]
+version = "0.3.2"
+
+[project.urls]
+Documentation = "https://github.com/famedly/synapse-domain-rule-checker/"
+Issues = "https://github.com/famedly/synapse-domain-rule-checker/"
+Source = "https://github.com/famedly/synapse-domain-rule-checker/"
+
+[tool.hatch.envs.default]
+dependencies = [
+  "black",
+  "pytest",
+  "pytest-cov",
+  "mock",
+  "matrix-synapse"
+]
+[tool.hatch.envs.default.scripts]
+cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=synapse_domain_rule_checker --cov=tests"
+format = "black ."
+
+[tool.hatch.envs.ci.scripts]
+format = "black --check ."
+
+[tool.coverage.run]
+branch = true
+parallel = true
+omit = []
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
 ]
