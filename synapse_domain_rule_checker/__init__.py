@@ -124,7 +124,7 @@ class DomainRuleChecker(object):
             inviter_userid=inviter_userid,
             invitee_userid=None,
         )
-    
+
     def _matches_domain_mapping(self, inviter_domain: str, invitee_domain: str) -> bool:
         """Check if the inviter and invitee domains match the regex rules in the domain mapping."""
         for inviter_regex, invitee_regex_list in self._domain_mapping.items():
